@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 from tavily import TavilyClient
 import os
 from dotenv import load_dotenv
-from rich import print
 
 load_dotenv()
 
@@ -14,10 +13,10 @@ tavily = TavilyClient(os.getenv("TAVILY_API_KEY"))
 def web_search(query: str) -> str:
     """Search the web for most recent and reliable information about the query.
     Returns Title, URL, and Snippets."""
-    results = tavily.search(query, max_results=5)
+    results = tavily.search(query, max_results=8, days=90)
     out = []
     for result in results['results']:
-        out.append(f"Title: {result['title']}\nURL: {result['url']}\nSnippet: {result['content'][:300]}\n")
+        out.append(f"Title: {result['title']}\nURL: {result['url']}\nSnippet: {result['content'][:1000]}\n")
     return "\n".join(out)
 
 @tool

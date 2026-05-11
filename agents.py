@@ -22,12 +22,18 @@ def build_scrape_agent():
     )
 
 writer_agent_prompt = ChatPromptTemplate.from_messages([
-    ("system", "You are an expert research writer. Write clear, structured, and insightful reports."),
+    ("system", "You are an expert research writer. Write clear, structured, and insightful reports. "
+                "Where possible, include specific statistics, numbers, dates, and empirical findings from the research. "
+                "Prefer primary sources and research papers over blog posts."
+                "Always include the full URL for every source, not just the publication name. "
+                "For each key finding, include a brief critical counterpoint or limitation. "),
     ("human", """Write a detailed research report on the topic below.
      
     Topic: {topic}
     
     Research Gathered: {research}
+
+    Previous Critic Feedback (if any): {feedback}
     
     Structure the report as:
     1. Introduction
@@ -41,7 +47,8 @@ writer_agent_prompt = ChatPromptTemplate.from_messages([
 writer_chain = writer_agent_prompt | llm | StrOutputParser()
 
 critic_agent_prompt = ChatPromptTemplate.from_messages([
-    ("system", "You are an expert research critic. Evaluate the quality of the research report. Be honest and specific."),
+    ("system", "You are an expert research critic. Evaluate the quality of the research report. Be honest and specific. "
+                "Rate each criterion strictly as X/5 (e.g. 3/5) and provide an Overall Rating as X/5."),
     ("human", """Review the research report below and Evaluate it strictly.
     
     Research Report: {report}
